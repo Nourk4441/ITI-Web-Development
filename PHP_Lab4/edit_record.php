@@ -17,17 +17,15 @@ if (!$conn) {
 // echo "Success: A proper connection to MySQL was made! The <span style='color:red'> $dbname </span>database is great.<br>" . PHP_EOL;
 // echo "Host information: " . mysqli_get_host_info($conn) . PHP_EOL;
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['ID'])) {
-    $id = intval($_GET['ID']); // Ensure ID is an integer
-    $sql = "SELECT * FROM users WHERE ID=$id";
-    $result = $conn->query($sql);
+$id = isset($_GET['ID']) ? intval($_GET['ID']) : 0;
 
-    if ($result && $result->num_rows == 1) {
-        $row = $result->fetch_assoc();
-    } else {
-        echo "Record not found!";
-        exit;
-    }
+$sql = "SELECT * FROM users WHERE ID = $id";
+$result = $conn->query($sql);
+$row = $result->fetch_assoc();
+
+if (!$row) {
+    echo "Record not found!";
+    exit;
 }
 
 // Update the record when the form is submitted
@@ -64,16 +62,16 @@ $conn->close();
     <form method="POST" action="edit_record.php">
         <div class="mb-3">
             <label>Name</label>
-            <input type="text" name="name" class="form-control" value="<?php echo $row['Name']; ?>" required>
+            <input type="text" name="Name" class="form-control" value="<?php echo $row['Name']; ?>" required>
         </div>
         <div class="mb-3">
             <label>Email</label>
-            <input type="email" name="email" class="form-control" value="<?php echo $row['Email']; ?>" required>
+            <input type="email" name="Email" class="form-control" value="<?php echo $row['Email']; ?>" required>
         </div>
         <div class="mb-3">
         <label>Gender</label>  
-        <input type="radio" name="gender" value="Female" <?php if ($row['Gender'] == "Female") echo "checked" ; ?>> Female
-        <input type="radio" name="gender" value="Male" <?php if ($row['Gender'] == "Male") echo "checked"; ?>> Male
+        <input type="radio" name="Gender" value="Female" <?php if ($row['Gender'] == "Female") echo "checked" ; ?>> Female
+        <input type="radio" name="Gender" value="Male" <?php if ($row['Gender'] == "Male") echo "checked"; ?>> Male
         </div>
         <div class="mb-3">
             <input type="checkbox" id="Mail_status" name="Mail_status" value="yes" <?php if ($row['Mail_status'] == "yes") echo "checked";?>>
